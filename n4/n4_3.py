@@ -25,26 +25,19 @@ def main(shader):
 
 
 def shader(x, y):
-    # Переводим координаты в полярные
     r = math.sqrt((x - 0.5)**2 + (y - 0.5)**2)
     theta = math.atan2(y - 0.5, x - 0.5)
 
-    # Определяем угол для рта Pac-Man
     mouth_angle = math.pi / 6
-
-    # Определяем координаты и радиус глаза
     eye_x, eye_y, eye_r = 0.6, 0.2, 0.09
 
-    # Проверяем, находится ли точка внутри глаза
     if ((x - eye_x)**2 + (y - eye_y)**2) < eye_r**2:
-        return 0, 0, 0  # Цвет глаза
+        return 0, 0, 0
 
-    # Если точка находится внутри угла рта Pac-Man, делаем ее черной
     if -mouth_angle < theta < mouth_angle and r < 0.5:
         return 0, 0, 0
     elif r < 0.5:
         return 1, 1, 0
-    # В противном случае делаем точку желтой
     else:
         return 0, 0, 0
 

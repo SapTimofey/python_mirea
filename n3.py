@@ -1,5 +1,5 @@
 
-
+# n3_1
 def n3_1(x):
     y = x
     y += x
@@ -9,6 +9,7 @@ def n3_1(x):
     print(y)
 
 
+# n3_2
 def n3_2(x):
     y = x
     y += x
@@ -18,6 +19,7 @@ def n3_2(x):
     print(y)
 
 
+# n3_3
 def n3_3(x):
     a = x + x
     b = a + a
@@ -122,30 +124,38 @@ assert mul16k(1, 15) == 15
 
 # n3_9
 def fast_mul_gen(y):
-    assignments = []
+    assignments = [f"y = x"]
 
-    # Generate assignment statements
-    x = "x"
     for i in range(1, y.bit_length() + 1):
         if y & 1:
-            assignments.append(f"y = {x}")
-        x = f"{x} << 1"
-        y >>= 1  # Используем битовый сдвиг для обработки целочисленного значения
+            assignments.append(f"y += y")
+        else:
+            assignments.append(f"y += x")
+        y >>= 1
 
-    # Generate function body
     function_body = ["\n    " + str(i) for i in assignments]
-
-    function_text = f"def f(x):{''.join(function_body)}\n    return y"
-
-    # Print the function
-    print(function_text)
+    function_text = f"def f(x):{''.join(function_body)}\n    return y\n"
     return function_text
 
 
-# Test the generator for a given value of y
-y = 10
+y = 12
 x = 15
-globals()["x"] = x
-fun = fast_mul_gen(y)
-print(exec(fun, globals()))
+exec(fast_mul_gen(y), globals())
 
+assert f(x) == x * y
+
+
+def fast_mul_gen_pow(y):
+    assignments = [f"y = x"]
+
+    for i in range(1, y):
+        assignments.append(f"y *= x")
+
+    function_body = ["\n    " + str(i) for i in assignments]
+    function_text = f"def f_pow(x):{''.join(function_body)}\n    return y\n"
+    return function_text
+
+
+exec(fast_mul_gen_pow(y), globals())
+
+assert f_pow(x) == x ** y

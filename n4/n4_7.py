@@ -1,4 +1,3 @@
-import math
 import tkinter as tk
 import time
 import threading
@@ -27,7 +26,7 @@ def update_image(label, shader, width, height, update_queue):
         end_time = time.time()
         elapsed_time = end_time - start_time
         fps = 1 / elapsed_time
-        print(f"FPS: {fps:.2f}")  # Не оптимизировано
+        print(f"FPS: {fps:.2f}")
 
 
 def main(shader):
@@ -62,21 +61,17 @@ def val_noise(x, y):
     x1 = x0 + 1
     y1 = y0 + 1
 
-    # Вычисление дробной части координат
     sx = x - x0
     sy = y - y0
 
-    # Генерация угловых значений шума
     n00 = noise(x0, y0)
     n01 = noise(x0, y1)
     n10 = noise(x1, y0)
     n11 = noise(x1, y1)
 
-    # Интерполяция по оси X
     ix0 = interpolate(n00, n10, sx)
     ix1 = interpolate(n01, n11, sx)
 
-    # Интерполяция по оси Y
     interpolated_noise = interpolate(ix0, ix1, sy)
 
     return interpolated_noise
