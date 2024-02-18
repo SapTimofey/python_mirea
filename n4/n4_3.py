@@ -1,0 +1,52 @@
+import math
+import tkinter as tk
+
+
+def draw(shader, width, height):
+    image = bytearray((0, 0, 0) * width * height)
+    for y in range(height):
+        for x in range(width):
+            pos = (width * y + x) * 3
+            color = shader(x / width, y / height)
+            normalized = [max(min(int(c * 255), 255), 0) for c in color]
+            image[pos:pos + 3] = normalized
+    header = bytes(f'P6\n{width} {height}\n255\n', 'ascii')
+    return header + image
+
+
+def main(shader):
+    root = tk.Tk()
+    root.configure(bg='black')
+    label = tk.Label(root, borderwidth=0)
+    img = tk.PhotoImage(data=draw(shader, 256, 256)).zoom(2, 2)
+    label.pack()
+    label.config(image=img)
+    tk.mainloop()
+
+
+def shader(x, y):
+    # Переводим координаты в полярные
+    r = math.sqrt((x - 0.5)**2 + (y - 0.5)**2)
+    theta = math.atan2(y - 0.5, x - 0.5)
+
+    # Определяем угол для рта Pac-Man
+    mouth_angle = math.pi / 6
+
+    # Определяем координаты и радиус глаза
+    eye_x, eye_y, eye_r = 0.6, 0.2, 0.09
+
+    # Проверяем, находится ли точка внутри глаза
+    if ((x - eye_x)**2 + (y - eye_y)**2) < eye_r**2:
+        return 0, 0, 0  # Цвет глаза
+
+    # Если точка находится внутри угла рта Pac-Man, делаем ее черной
+    if -mouth_angle < theta < mouth_angle and r < 0.5:
+        return 0, 0, 0
+    elif r < 0.5:
+        return 1, 1, 0
+    # В противном случае делаем точку желтой
+    else:
+        return 0, 0, 0
+
+
+main(shader)
